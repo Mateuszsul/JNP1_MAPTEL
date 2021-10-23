@@ -1,6 +1,8 @@
 #include "maptel.h"
 #include <unordered_map>
 #include <string>
+#include <cassert>
+#include <memory>
 
 namespace {
 
@@ -85,7 +87,7 @@ namespace {
         if (debug) {
             clog << "maptel: " << function
                  << "(" << id << ", " << tel1 << ", "
-                 << /*reinterpret_cast<void *>(tel2)*/"ADDR" << ", "
+                 << reinterpret_cast<void *>(tel2) << ", "
                  << len << ")" << "\n";
         }
     }
