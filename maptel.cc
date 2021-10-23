@@ -1,3 +1,10 @@
+/**
+ * Implementacja modułu "Maptel"
+ * JNP1, Zadanie 2, MIMUW 2021
+ *
+ * autorzy: Mateusz Sulimowicz, Filip Głębocki
+ */
+
 #include "maptel.h"
 #include <unordered_map>
 #include <string>
