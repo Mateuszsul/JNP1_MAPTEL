@@ -14,9 +14,9 @@
 namespace {
 
 #ifdef NDEBUG
-    static const bool debug = false;
+    const bool debug = false;
 #else
-    static const bool debug = true;
+    const bool debug = true;
 #endif
 
     using std::string;
@@ -93,7 +93,7 @@ namespace {
         if (debug) {
             cerr << "maptel: " << function
                  << "(" << id << ", " << tel1 << ", "
-                 << reinterpret_cast<void *>(tel2) << ", "
+                 << static_cast<void *>(tel2) << ", "
                  << len << ")" << "\n";
         }
     }
