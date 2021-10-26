@@ -10,7 +10,6 @@
 #include <string>
 #include <cassert>
 #include <memory>
-#include <cstdarg>
 
 namespace {
 
@@ -61,67 +60,47 @@ namespace {
 
     // -- Funkcje do logowania parametrów wywołania --
 
-    void log_params(size_t params_count, ...) {
-        va_list args;
-        va_start(args, params_count);
-
-        if (params_count-- > 0)
-            cerr << "maptel: " << va_arg(args, string) << "(";
-        if (params_count-- > 0)
-            cerr << va_arg(args, maptel_id);
-        if (params_count-- > 0)
-            cerr << ", " << va_arg(args, char *);
-        if (params_count-- > 0)
-            cerr << ", " << va_arg(args, char *);
-        if (params_count-- > 0)
-            cerr << ", " << va_arg(args, size_t);
-
-        va_end(args);
-
-        cerr << ")\n";
+    void log_params(const string &function) {
+        if (debug) {
+            cerr << "maptel: " << function << "()" << "\n";
+        }
     }
 
-//    void log_params(const string &function) {
-//        if (debug) {
-//            cerr << "maptel: " << function << "()" << "\n";
-//        }
-//    }
-//
-//    void log_params(const string &function, maptel_id id) {
-//        if (debug) {
-//            cerr << "maptel: " << function << "(" << id << ")" << "\n";
-//        }
-//    }
-//
-//    void log_params(const string &function, maptel_id id, const char *tel1) {
-//        if (debug) {
-//            cerr << "maptel: " << function << "(" << id << ", " << tel1 << ")"
-//                 << "\n";
-//        }
-//    }
-//
-//    void log_params(const string &function, maptel_id id, const char *tel1,
-//                    const char *tel2) {
-//        if (debug) {
-//            cerr << "maptel: " << function
-//                 << "(" << id << ", " << tel1 << ", " << tel2 << ")"
-//                 << "\n";
-//        }
-//    }
-//
-//    void log_params(const string &function, maptel_id id, const char *tel1,
-//                    char *tel2, size_t len) {
-//        if (debug) {
-//            cerr << "maptel: " << function
-//                 << "(" << id << ", " << tel1 << ", "
-//                 << reinterpret_cast<void *>(tel2) << ", "
-//                 << len << ")" << "\n";
-//        }
-//    }
+    void log_params(const string &function, maptel_id id) {
+        if (debug) {
+            cerr << "maptel: " << function << "(" << id << ")" << "\n";
+        }
+    }
+
+    void log_params(const string &function, maptel_id id, const char *tel1) {
+        if (debug) {
+            cerr << "maptel: " << function << "(" << id << ", " << tel1 << ")"
+                 << "\n";
+        }
+    }
+
+    void log_params(const string &function, maptel_id id, const char *tel1,
+                    const char *tel2) {
+        if (debug) {
+            cerr << "maptel: " << function
+                 << "(" << id << ", " << tel1 << ", " << tel2 << ")"
+                 << "\n";
+        }
+    }
+
+    void log_params(const string &function, maptel_id id, const char *tel1,
+                    char *tel2, size_t len) {
+        if (debug) {
+            cerr << "maptel: " << function
+                 << "(" << id << ", " << tel1 << ", "
+                 << reinterpret_cast<void *>(tel2) << ", "
+                 << len << ")" << "\n";
+        }
+    }
 
     // Sprawdza, czy numer telefonu jest poprawny.
     bool is_valid_tel(char const *tel) {
-        if (tel == NULL) {
+        if (tel == nullptr) {
             return false;
         }
 
@@ -132,13 +111,13 @@ namespace {
             }
         }
 
-        return tel[i] == '\0';
+        return tel[i] == '\0' && i > 0;
     }
 
     bool
     is_valid_output(const string &tel_src, const char *tel_dst, size_t len) {
         // + 1 na terminalne '\0'
-        return tel_dst != NULL && len >= tel_src.length() + 1;
+        return (tel_dst != nullptr && len >= tel_src.length() + 1);
     }
 
     void persist_transformation(const string &transformed_src, char *tel_dst,
@@ -193,7 +172,7 @@ namespace {
 } // anonymous namespace
 
 unsigned long jnp1::maptel_create(void) {
-    log_params(1, __FUNCTION__);
+    log_params(__FUNCTION__);
     repository()[new_maptel_id];
     log_message(__FUNCTION__, "new map id = " + to_string(new_maptel_id));
     return new_maptel_id++;
@@ -201,7 +180,7 @@ unsigned long jnp1::maptel_create(void) {
 
 void jnp1::maptel_delete(maptel_id id) {
     assert(repo_contains(id));
-    log_params(2, __FUNCTION__, id);
+    log_params(__FUNCTION__, id);
 
     if (!repo_contains(id)) {
         log_message(__FUNCTION__, "nothing to delete");
@@ -215,7 +194,7 @@ void jnp1::maptel_delete(maptel_id id) {
 void jnp1::maptel_insert(maptel_id id, char const *tel_src,
                          char const *tel_dst) {
     assert(repo_contains(id) && is_valid_tel(tel_src) && is_valid_tel(tel_dst));
-    log_params(4, __FUNCTION__, id, tel_src, tel_dst);
+    log_params(__FUNCTION__, id, tel_src, tel_dst);
 
     string src = string(tel_src);
     string dst = string(tel_dst);
@@ -225,7 +204,7 @@ void jnp1::maptel_insert(maptel_id id, char const *tel_src,
 
 void jnp1::maptel_erase(maptel_id id, char const *tel_src) {
     assert(repo_contains(id) && is_valid_tel(tel_src));
-    log_params(3, __FUNCTION__, id, tel_src);
+    log_params(__FUNCTION__, id, tel_src);
 
     string src = string(tel_src);
     if (!maptel_contains(id, src)) {
@@ -237,11 +216,10 @@ void jnp1::maptel_erase(maptel_id id, char const *tel_src) {
     log_message(__FUNCTION__, "erased");
 }
 
-void
-jnp1::maptel_transform(maptel_id id, char const *tel_src, char *tel_dst,
-                       size_t len) {
-    assert(repo_contains(id) && is_valid_tel(tel_src) && tel_dst != NULL);
-    log_params(5, __FUNCTION__, id, tel_src, tel_dst, len);
+void jnp1::maptel_transform(maptel_id id, char const *tel_src,
+                            char *tel_dst, size_t len) {
+    assert(repo_contains(id) && is_valid_tel(tel_src) && tel_dst != nullptr);
+    log_params(__FUNCTION__, id, tel_src, tel_dst, len);
 
     string src = string(tel_src);
     string transformed_src;
