@@ -104,7 +104,7 @@ namespace {
         }
 
         size_t i = 0;
-        for (; i < jnp1::TEL_NUM_MAX_LEN + 1; ++i) {
+        for (; i < jnp1::TEL_NUM_MAX_LEN; ++i) {
             if (!std::isdigit(tel[i])) {
                 break;
             }
