@@ -37,8 +37,8 @@ namespace {
 
     // Ochrona przed "static initialization order fiasco".
     maptel_repo &repository() {
-        static unique_ptr<maptel_repo> database(new maptel_repo());
-        return *database;
+        static unique_ptr<maptel_repo> repo(new maptel_repo());
+        return *repo;
     }
 
     // Sprawdza, czy repozytorium zawiera słownik o numerze `id`.
