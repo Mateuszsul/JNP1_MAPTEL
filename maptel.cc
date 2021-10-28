@@ -99,7 +99,7 @@ namespace {
     }
 
     // Sprawdza, czy numer telefonu jest poprawny.
-    bool is_valid_tel(char const *tel) {
+    [[maybe_unused]] bool is_valid_tel(char const *tel) {
         if (tel == nullptr) {
             return false;
         }
@@ -114,7 +114,7 @@ namespace {
         return tel[i] == '\0' && i > 0;
     }
 
-    bool
+    [[maybe_unused]] bool
     is_valid_output(const string &tel_src, const char *tel_dst, size_t len) {
         // + 1 na terminalne '\0'
         return (tel_dst != nullptr && len >= tel_src.length() + 1);
